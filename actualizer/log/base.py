@@ -29,7 +29,6 @@ class Log:
     def infer_datetime(self) -> datetime.datetime:
         matches = DATETIME_PATTERN.search(self.message)
 
-
 class NutritionLog(Log):
     def __init__(self, log_request_context: dict) -> 'NutritionLog':
         super().__init__(self, log_request_context)
