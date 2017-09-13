@@ -37,7 +37,7 @@ def _log(log: dict) -> None:
             )
 
 @cli.command('list')
-@click.option('--username', type = str)
+@click.option('--username', type = str, default = DEFAULT_USERNAME)
 def list(**list_request: dict) -> None:
     response = _list(list_request)
     print(response['Items'])
