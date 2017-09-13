@@ -1,7 +1,7 @@
 from typing import List, Union
 import datetime
 
-INTERVAL_MAP = {
+TIMEUNIT_MAP = {
         'd': 'days',
         'day': 'days',
         'days': 'days',
@@ -9,6 +9,7 @@ INTERVAL_MAP = {
         'hr': 'hours',
         'hours': 'hours',
         'hrs': 'hours',
+        'hour': 'hours',
         'm': 'minutes',
         'min': 'minutes',
         'mins': 'minutes',
@@ -27,7 +28,7 @@ def get_all_subclasses(cls: type) -> List[type]:
     return all_subclasses
 
 def get_timedelta(qty: Union[int, float], interval: str) -> datetime.timedelta:
-    return datetime.timedelta(**{INTERVAL_MAP[interval]: qty})
+    return datetime.timedelta(**{TIMEUNIT_MAP[interval]: convert_numeric(qty)})
 
 def convert_numeric(num_str: str) -> Union[int, float]:
     try:
