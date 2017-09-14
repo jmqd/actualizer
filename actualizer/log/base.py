@@ -7,7 +7,7 @@ TOKENS_PRECEEDING_TIMEUNIT = r'(?P<QUANTITY>(?:[0-9]{1,})|(?:a few)|(?:an))'
 TOKENS_SUCCEEDING_TIMEUNIT = r'(?P<RELATIVE_DIRECTION>(?:ago)|(?:earlier))'
 FIXED_RELATIVE_TOKENS = r'(?P<FIXED_RELATIVE>(?:yesterday)|(?:today))'
 RELATIVE_DELTA_PATTERN = r'(?P<RELATIVE_DELTA>' + '|'.join([r'\s{1,}'.join([TOKENS_PRECEEDING_TIMEUNIT, TIMEUNIT_PATTERN, TOKENS_SUCCEEDING_TIMEUNIT]), FIXED_RELATIVE_TOKENS]) + r')'
-ABSOLUTE_DATETIME_PATTERN = r'(?:(?:at)|(?:this))\s{1,}(?P<ABSOLUTE>(?:(?:noon)|(?:midnight)|(?:morning)|(?:afternoon)|(?:evening))|(?:(?:\d{1,2})(?::\d{2})?(?:\s?(?:PM?)|(?:AM?))?))'
+ABSOLUTE_DATETIME_PATTERN = r'(?:(?:at)|(?:this))\s{1,}(?P<ABSOLUTE_TIME>(?:(?:noon)|(?:midnight)|(?:morning)|(?:afternoon)|(?:evening))|(?:(?:\d{1,2})(?::\d{2})?(?:\s?(?:PM?)|(?:AM?))?))'
 DATETIME_PATTERN = re.compile('|'.join([RELATIVE_DELTA_PATTERN, ABSOLUTE_DATETIME_PATTERN]), re.IGNORECASE)
 NOW_DT = datetime.datetime.now()
 
@@ -21,6 +21,8 @@ NOW_DT = datetime.datetime.now()
 #   - SleepLog (?)
 
 class Log:
+    _FIELDS = ['username', 'message', 'request_time', 'datetime']
+
     def __init__(self, log_request_context: dict) -> 'Log':
         self.username = log_request_context['username']
         self.message = log_request_context['message']
@@ -37,4 +39,7 @@ class Log:
 
         if 'RELATIVE_DELTA' in groupdict:
             return self.request_time - util.get_timedelta(groupdict['QUANTITY'], groupdict['TIMEUNIT'])
+
+        if 'ABSOLUTE_TIME' in groupdict:
+            return util.convert_fuzzy_time_to_dt(groupdict['ABSOLUTE_TIME'])
 
