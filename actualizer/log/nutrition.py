@@ -1,22 +1,34 @@
 import re
+from typing import Union
 
 from actualizer import util
 from actualizer.log.base import Log
 
-CALORIES_PATTERN = re.compile(r'(?P<CALORIES_QUANTITY>[0-9]{1,})\s{0,}(?:(?:cal)|(?:cals))')
-
 class NutritionLog(Log):
     MESSAGE_PATTERN = re.compile(r'(?P<VERB>(?:(?:ate)|(?:drank)))')
+    PARSING_PATTERN = re.compile(r'(?P<calories>[0-9]{1,})\s{0,}(?:(?:cal)|(?:cals))\s{1,}(?P<food>.*$)')
+    _FIELDS = ['calories', 'food']
 
     def __init__(self, log_request_context: dict) -> 'NutritionLog':
         super().__init__(log_request_context)
-        self.calories = self.infer_calories()
+        self.nutrition_substr = re.sub(Log.DATETIME_PATTERN, '', self.message).strip()
+        self.infer_attributes()
 
-    def infer_calories(self):
-        matches = CALORIES_PATTERN.search(self.message)
+    @property
+    def calories(self) -> Union[int, float]:
+        return self.__calories
 
+    @calories.setter
+    def calories(self, value: Union[str, int, float]) -> None:
+        self.__calories = util.convert_numeric(value)
+
+    def infer_attributes(self) -> None:
+        matches = self.PARSING_PATTERN.search(self.nutrition_substr)
         if not matches:
-            return None
+            return
 
-        return matches.group('CALORIES_QUANTITY')
+        group_dict = matches.groupdict()
+
+        for attr in self._FIELDS:
+            setattr(self, attr, group_dict[attr])
 

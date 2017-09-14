@@ -12,4 +12,9 @@ def test_nutrition_parsing():
             'request_time': NOW_DT
             }
     log = NutritionLog(log_request)
-    print(log)
+
+    assert log.datetime == NOW_DT - datetime.timedelta(minutes = 20)
+    assert log.username == 'jordan'
+    assert log.calories == 100
+    assert log.nutrition_substr == 'ate a 100 cal apple'
+    assert log.food == 'apple'
