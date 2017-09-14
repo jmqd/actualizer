@@ -4,6 +4,7 @@ import re
 
 from actualizer import util
 from actualizer.log import base
+from actualizer.log import nutrition
 
 LOG_SUBCLASSES = util.get_all_subclasses(base.Log)
 

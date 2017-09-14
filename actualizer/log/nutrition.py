@@ -9,7 +9,7 @@ class NutritionLog(Log):
     MESSAGE_PATTERN = re.compile(r'(?P<VERB>(?:(?:ate)|(?:drank)))')
 
     def __init__(self, log_request_context: dict) -> 'NutritionLog':
-        super().__init__(self, log_request_context)
+        super().__init__(log_request_context)
         self.calories = self.infer_calories()
 
     def infer_calories(self):
