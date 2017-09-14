@@ -9,7 +9,7 @@ from actualizer.log import nutrition
 LOG_SUBCLASSES = util.get_all_subclasses(base.Log)
 
 def factory(log_request_context: dict) -> base.Log:
-    kind = get_log_type(log['message'])
+    kind = get_log_type(log_request_context['message'])
     return kind(log_request_context)
 
 def get_log_type(message: str) -> type:
