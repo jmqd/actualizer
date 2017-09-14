@@ -8,7 +8,7 @@ from actualizer.log.base import DATETIME_PATTERN
 class NutritionLog(Log):
     MESSAGE_PATTERN = re.compile(r'(?P<VERB>(?:(?:ate)|(?:drank)))', re.IGNORECASE)
     PARSING_PATTERN = re.compile(r'(?P<calories>[0-9]{1,})\s{0,}(?:(?:cal)|(?:cals))\s{1,}(?P<food>.*$)', re.IGNORECASE)
-    _FIELDS = ['calories', 'food']
+    _FIELDS = ['calories', 'food'] + Log._FIELDS
 
     def __init__(self, log_request_context: dict) -> 'NutritionLog':
         super().__init__(log_request_context)
@@ -31,5 +31,8 @@ class NutritionLog(Log):
         group_dict = matches.groupdict()
 
         for attr in self._FIELDS:
-            setattr(self, attr, group_dict[attr])
+            if attr in group_dict:
+                setattr(self, attr, group_dict[attr])
 
+    def __str__(self) -> str:
+        return '{}: {}'.format(self.__class__.__name__, str({x:getattr(self, x) for x in self._FIELDS}))
