@@ -2,6 +2,7 @@ import click
 import datetime
 import boto3
 from boto3.dynamodb.conditions import Key, Attr
+from actualizer.log import client
 
 NOW_DT = datetime.datetime.now()
 NOW = NOW_DT.isoformat()
@@ -24,17 +25,19 @@ def cli() -> None: pass
 
 @cli.command('log')
 @click.option('--message', '-m', type = str)
-@click.option('--datetime', type = str, default = NOW)
+@click.option('--request-time', type = str, default = NOW)
 @click.option('--username', type = str, default = DEFAULT_USERNAME)
 def log(**log_request: dict) -> None:
     _log(log_request)
     print("Put log {} to {}.".format(log_request, LOG_TABLE_NAME))
 
 def _log(log: dict) -> None:
-    ddb.put_item(
-            TableName = LOG_TABLE_NAME,
-            Item = convert_dict_to_ddb_item(log)
-            )
+    parsed_log = client.factory(log)
+    print(parsed_log)
+    #ddb.put_item(
+    #        TableName = LOG_TABLE_NAME,
+    #        Item = convert_dict_to_ddb_item(log)
+    #        )
 
 @cli.command('list')
 @click.option('--username', type = str, default = DEFAULT_USERNAME)
