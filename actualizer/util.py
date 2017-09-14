@@ -36,3 +36,6 @@ def convert_numeric(num_str: str) -> Union[int, float]:
     except:
         return int(num_str)
 
+def convert_fuzzy_time_to_dt(fuzzy_datetime: str) -> datetime.datetime:
+    # TODO: implement
+    return fuzzy_datetime
