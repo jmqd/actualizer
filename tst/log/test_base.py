@@ -22,6 +22,32 @@ def test_relative_datetime_regex():
     assert matches['TIMEUNIT'] == 'hour'
     assert matches['QUANTITY'] == 'an'
 
+def test_absolute_datetime_regex_with_PM_AM():
+    matches = base.DATETIME_PATTERN.search('ate a 100 cal candy bar at 5:00 PM').groupdict()
+    assert matches['ABSOLUTE'] == '5:00 PM'
+
+    matches = base.DATETIME_PATTERN.search('ate a 500 cal candy bar at 12:00 PM').groupdict()
+    assert matches['ABSOLUTE'] == '12:00 PM'
+
+    matches = base.DATETIME_PATTERN.search('ate a 100 cal candy bar this morning').groupdict()
+    assert matches['ABSOLUTE'] == 'morning'
+
+    matches = base.DATETIME_PATTERN.search('ate a 100 cal candy bar at 11').groupdict()
+    assert matches['ABSOLUTE'] == '11'
+
+    matches = base.DATETIME_PATTERN.search('ate a 12300 cal candy bar at 5P').groupdict()
+    assert matches['ABSOLUTE'] == '5P'
+
+    matches = base.DATETIME_PATTERN.search('ate a 12300 cal candy bar at 1A').groupdict()
+    assert matches['ABSOLUTE'] == '1A'
+
+    matches = base.DATETIME_PATTERN.search('ate a 12300 cal candy bar at 1:00AM').groupdict()
+    assert matches['ABSOLUTE'] == '1:00AM'
+
+    matches = base.DATETIME_PATTERN.search('ate a 12300 cal candy bar at 3:00P').groupdict()
+    assert matches['ABSOLUTE'] == '3:00P'
+
+
 def test_infer_datetime():
     log_request = {
             'request_time': base.NOW_DT,

@@ -3,15 +3,16 @@ from typing import Union
 
 from actualizer import util
 from actualizer.log.base import Log
+from actualizer.log.base import DATETIME_PATTERN
 
 class NutritionLog(Log):
-    MESSAGE_PATTERN = re.compile(r'(?P<VERB>(?:(?:ate)|(?:drank)))')
-    PARSING_PATTERN = re.compile(r'(?P<calories>[0-9]{1,})\s{0,}(?:(?:cal)|(?:cals))\s{1,}(?P<food>.*$)')
+    MESSAGE_PATTERN = re.compile(r'(?P<VERB>(?:(?:ate)|(?:drank)))', re.IGNORECASE)
+    PARSING_PATTERN = re.compile(r'(?P<calories>[0-9]{1,})\s{0,}(?:(?:cal)|(?:cals))\s{1,}(?P<food>.*$)', re.IGNORECASE)
     _FIELDS = ['calories', 'food']
 
     def __init__(self, log_request_context: dict) -> 'NutritionLog':
         super().__init__(log_request_context)
-        self.nutrition_substr = re.sub(Log.DATETIME_PATTERN, '', self.message).strip()
+        self.nutrition_substr = re.sub(DATETIME_PATTERN, '', self.message).strip()
         self.infer_attributes()
 
     @property
