@@ -47,3 +47,15 @@ def test_convert_fuzzy_time_to_dt():
 def truncate_datetime_to_hour_precision(dt: datetime.datetime) -> datetime.datetime:
     return dt.replace(minute = 0, second = 0, microsecond = 0)
 
+def test_convert_to_int():
+    assert util.convert_to_int('5') == 5
+    assert util.convert_to_int('-1') == -1
+    assert util.convert_to_int('-0.5') == 0
+    assert util.convert_to_int('2.5') == 2
+    assert util.convert_to_int('123.32') == 123
+    assert util.convert_to_int('123.99') == 123
+    assert util.convert_to_int('1412') == 1412
+    assert util.convert_to_int('0.00000001') == 0
+    assert util.convert_to_int('31.3451') == 31
+    assert util.convert_to_int('0') == 0
+    assert util.convert_to_int('0.7') == 0

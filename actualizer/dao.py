@@ -1,12 +1,12 @@
 import boto3
 import datetime
-from typing import List, Union
+from typing import List
 from inspect import signature
 from actualizer import log
 from actualizer import util
 from boto3.dynamodb.conditions import Key, Attr
 
-LOG_TABLE_NAME_TEMPLATE = 'actualizer-{region}-{domain}-logs'
+LOG_TABLE_NAME_TEMPLATE = 'actualizer-logs'
 LOG_SUBCLASSES = [x for x in util.get_all_subclasses(log.base.Log)]
 FIELD_SERIALIZERS = {k:v for x in LOG_SUBCLASSES for k, v in x.FIELD_SERIALIZER.items()}
 
@@ -16,7 +16,6 @@ RETURN_SIGNATURES_FOR_FIELDS = {k:signature(v).return_annotation for k, v in FIE
 # mapping from return types to DDB string codes for that type
 DDB_ATTRIBUTE_TYPE_MAPPING = {
         str: 'S',
-        Union[int, float]: 'N',
         int: 'N',
         float: 'N'
         }
@@ -33,11 +32,14 @@ class LogTableDao:
 
     def save(self, log: log.base.Log) -> None:
         itemdict = log.to_serialized_dict()
-        put_response = ddb.put_item(
+        put_response = self.client.put_item(
                 TableName = self.table_name,
                 Item = convert_dict_to_ddb_item(itemdict)
                 )
         return put_response
+
+    def test(self, log):
+        return convert_dict_to_ddb_item(log.to_serialized_dict())
 
     def list_by_timerange(self, username: str, start: datetime.datetime,
                           end: datetime.datetime) -> List[dict]:

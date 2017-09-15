@@ -8,7 +8,7 @@ from actualizer.log.base import DATETIME_PATTERN
 
 class NutritionLog(Log):
     MESSAGE_PATTERN = re.compile(r'(?P<VERB>(?:(?:ate)|(?:drank)))', re.IGNORECASE)
-    PARSING_PATTERN = re.compile(r'(?P<calories>[0-9]{1,})\s{0,}(?:(?:cal)|(?:cals))(?:\s{1,}of)?\s{1,}(?P<food>.*$)', re.IGNORECASE)
+    PARSING_PATTERN = re.compile(r'(?P<calories>[0-9]{1,})\s{0,}(?:(?:cals?)|(?:calories?))(?:\s{1,}of)?\s{1,}(?P<food>.*$)', re.IGNORECASE)
     FIELDS = ['calories', 'food'] + Log.FIELDS
     FIELD_SERIALIZER = {k:eval('serialize_{}'.format(k)) for k in FIELDS}
 
