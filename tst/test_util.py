@@ -33,4 +33,17 @@ def test_get_timedelta():
     assert util.get_timedelta(2.5, 'min') == datetime.timedelta(minutes = 2.5)
     assert util.get_timedelta(10, 'mins') == datetime.timedelta(minutes = 10)
 
+def test_convert_fuzzy_time_to_dt():
+    noon = truncate_datetime_to_hour_precision(datetime.datetime.now().replace(hour = 12))
+    evening = truncate_datetime_to_hour_precision(datetime.datetime.now().replace(hour = 18))
+    afternoon = truncate_datetime_to_hour_precision(datetime.datetime.now().replace(hour = 14))
+    morning = truncate_datetime_to_hour_precision(datetime.datetime.now().replace(hour = 9))
+
+    assert truncate_datetime_to_hour_precision(util.convert_fuzzy_time_to_dt('noon')) == noon
+    assert truncate_datetime_to_hour_precision(util.convert_fuzzy_time_to_dt('evening')) == evening
+    assert truncate_datetime_to_hour_precision(util.convert_fuzzy_time_to_dt('afternoon')) == afternoon
+    assert truncate_datetime_to_hour_precision(util.convert_fuzzy_time_to_dt('morning')) == morning
+
+def truncate_datetime_to_hour_precision(dt: datetime.datetime) -> datetime.datetime:
+    return dt.replace(minute = 0, second = 0, microsecond = 0)
 
