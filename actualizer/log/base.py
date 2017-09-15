@@ -20,8 +20,16 @@ NOW_DT = datetime.datetime.now()
 #   - TaskLog
 #   - SleepLog (?)
 
+
+
 class Log:
     _FIELDS = ['username', 'message', 'request_time', 'datetime']
+    FIELD_SERIALIZER = {
+            'username': str,
+            'message': str,
+            'request_time': lambda x: x.isoformat(),
+            'datetime': lambda x: x.isoformat()
+            }
 
     def __init__(self, log_request_context: dict) -> 'Log':
         self.username = log_request_context['username']
@@ -42,4 +50,7 @@ class Log:
 
         if 'ABSOLUTE_TIME' in groupdict:
             return util.convert_fuzzy_time_to_dt(groupdict['ABSOLUTE_TIME'])
+
+    def to_serialized_dict(self) -> dict:
+        return {k: self.FIELD_SERIALIZER[k](getattr(self, k)) for k in self._FIELDS}
 

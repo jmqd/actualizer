@@ -9,6 +9,7 @@ class NutritionLog(Log):
     MESSAGE_PATTERN = re.compile(r'(?P<VERB>(?:(?:ate)|(?:drank)))', re.IGNORECASE)
     PARSING_PATTERN = re.compile(r'(?P<calories>[0-9]{1,})\s{0,}(?:(?:cal)|(?:cals))\s{1,}(?P<food>.*$)', re.IGNORECASE)
     _FIELDS = ['calories', 'food'] + Log._FIELDS
+    FIELD_SERIALIZER = dict({'calories': util.convert_numeric, 'food': str}, **Log.FIELD_SERIALIZER)
 
     def __init__(self, log_request_context: dict) -> 'NutritionLog':
         super().__init__(log_request_context)
@@ -21,7 +22,7 @@ class NutritionLog(Log):
 
     @calories.setter
     def calories(self, value: Union[str, int, float]) -> None:
-        self.__calories = util.convert_numeric(value)
+        self.__calories = value
 
     def infer_attributes(self) -> None:
         matches = self.PARSING_PATTERN.search(self.nutrition_substr)
