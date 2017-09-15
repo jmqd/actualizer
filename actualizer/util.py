@@ -18,6 +18,13 @@ TIMEUNIT_MAP = {
         'secs': 'seconds'
         }
 
+FUZZY_DATETIME_MAPPING = {
+        'noon': lambda x: x.replace(hour = 12),
+        'evening': lambda x: x.replace(hour = 18),
+        'afternoon': lambda x: x.replace(hour = 14),
+        'morning': lambda x: x.replace(hour = 9),
+        }
+
 def get_all_subclasses(cls: type) -> List[type]:
     all_subclasses = []
 
@@ -37,5 +44,8 @@ def convert_numeric(num_str: str) -> Union[int, float]:
         return int(num_str)
 
 def convert_fuzzy_time_to_dt(fuzzy_datetime: str) -> datetime.datetime:
-    # TODO: implement
-    return fuzzy_datetime
+    now = datetime.datetime.now()
+
+    if fuzzy_datetime in FUZZY_DATETIME_MAPPING:
+        return FUZZY_DATETIME_MAPPING.get(fuzzy_datetime)(now)
+
