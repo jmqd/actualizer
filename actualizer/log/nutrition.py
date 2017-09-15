@@ -2,14 +2,15 @@ import re
 from typing import Union
 
 from actualizer import util
+from actualizer.log.serializers import *
 from actualizer.log.base import Log
 from actualizer.log.base import DATETIME_PATTERN
 
 class NutritionLog(Log):
     MESSAGE_PATTERN = re.compile(r'(?P<VERB>(?:(?:ate)|(?:drank)))', re.IGNORECASE)
     PARSING_PATTERN = re.compile(r'(?P<calories>[0-9]{1,})\s{0,}(?:(?:cal)|(?:cals))(?:\s{1,}of)?\s{1,}(?P<food>.*$)', re.IGNORECASE)
-    _FIELDS = ['calories', 'food'] + Log._FIELDS
-    FIELD_SERIALIZER = dict({'calories': util.convert_numeric, 'food': str}, **Log.FIELD_SERIALIZER)
+    FIELDS = ['calories', 'food'] + Log.FIELDS
+    FIELD_SERIALIZER = {k:eval('serialize_{}'.format(k)) for k in FIELDS}
 
     def __init__(self, log_request_context: dict) -> 'NutritionLog':
         super().__init__(log_request_context)
@@ -31,9 +32,11 @@ class NutritionLog(Log):
 
         group_dict = matches.groupdict()
 
-        for attr in self._FIELDS:
+        for attr in self.FIELDS:
             if attr in group_dict:
                 setattr(self, attr, group_dict[attr])
 
     def __str__(self) -> str:
-        return '{}: {}'.format(self.__class__.__name__, str({x:getattr(self, x) for x in self._FIELDS}))
+        return '{}: {}'.format(self.__class__.__name__, str({x:getattr(self, x) for x in self.FIELDS}))
+
+

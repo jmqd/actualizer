@@ -1,6 +1,7 @@
 import re
 import datetime
 from actualizer import util
+from actualizer.log.serializers import *
 
 TIMEUNIT_PATTERN = r'(?P<TIMEUNIT>{})'.format('|'.join(['(?:{})'.format(k) for k in util.TIMEUNIT_MAP]))
 TOKENS_PRECEEDING_TIMEUNIT = r'(?P<QUANTITY>(?:[0-9]{1,})|(?:a few)|(?:an))'
@@ -20,16 +21,9 @@ NOW_DT = datetime.datetime.now()
 #   - TaskLog
 #   - SleepLog (?)
 
-
-
 class Log:
-    _FIELDS = ['username', 'message', 'request_time', 'datetime']
-    FIELD_SERIALIZER = {
-            'username': str,
-            'message': str,
-            'request_time': lambda x: x.isoformat(),
-            'datetime': lambda x: x.isoformat()
-            }
+    FIELDS = ['username', 'message', 'request_time', 'datetime']
+    FIELD_SERIALIZER = {k:eval('serialize_{}'.format(k)) for k in FIELDS}
 
     def __init__(self, log_request_context: dict) -> 'Log':
         self.username = log_request_context['username']
@@ -52,5 +46,5 @@ class Log:
             return util.convert_fuzzy_time_to_dt(groupdict['ABSOLUTE_TIME'])
 
     def to_serialized_dict(self) -> dict:
-        return {k: self.FIELD_SERIALIZER[k](getattr(self, k)) for k in self._FIELDS}
+        return {k: self.FIELD_SERIALIZER[k](getattr(self, k)) for k in self.FIELDS}
 
