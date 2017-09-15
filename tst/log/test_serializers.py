@@ -15,12 +15,13 @@ def test_serialize_calories():
         serialize_calories('501.1')
         convert_to_int_mocked.assert_called_with('501.1')
 
-    assert serialize_calories(10) == 10
-    assert serialize_calories('10') == 10
-    assert serialize_calories(10.5) == 10
-    assert serialize_calories(0) == 0
-    assert serialize_calories('0') == 0
-    assert serialize_calories('213') == 213
+    assert serialize_calories(10) == '10'
+    assert serialize_calories('10') == '10'
+    assert serialize_calories(10.5) == '10'
+    assert serialize_calories(0) == '0'
+    assert serialize_calories('0') == '0'
+    assert serialize_calories('213') == '213'
+    assert serialize_calories(212) == '212'
 
 def test_serialize_username():
     assert serialize_username('foo') == 'foo'

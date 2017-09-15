@@ -15,7 +15,7 @@ def serialize_datetime(_datetime: datetime.datetime) -> str:
     return _datetime.isoformat()
 
 def serialize_calories(calories: Union[int, float, str]) -> int:
-    return util.convert_to_int(calories)
+    return str(util.convert_to_int(calories))
 
 def serialize_food(food: str) -> str:
     return str(food)

@@ -1,3 +1,3 @@
 class Response: pass
-
-class LogResponse: pass
+class LogResponse(Response): pass
+class ListResponse(Response): pass

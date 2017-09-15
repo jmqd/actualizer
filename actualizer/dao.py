@@ -41,12 +41,11 @@ class LogTableDao:
     def test(self, log):
         return convert_dict_to_ddb_item(log.to_serialized_dict())
 
-    def list_by_timerange(self, username: str, start: datetime.datetime,
+    def query_by_timerange(self, username: str, start: datetime.datetime,
                           end: datetime.datetime) -> List[dict]:
         response = self.table.query(
                 KeyConditionExpression = Key('username').eq(username) & \
-                Key('datetime').gt(start) & \
-                Key('datetime').lt(end)
+                Key('datetime').between(start, end)
                 )
         return response
 
