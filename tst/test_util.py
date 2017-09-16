@@ -32,6 +32,8 @@ def test_get_timedelta():
     assert util.get_timedelta(20, 'm') == datetime.timedelta(minutes = 20)
     assert util.get_timedelta(2.5, 'min') == datetime.timedelta(minutes = 2.5)
     assert util.get_timedelta(10, 'mins') == datetime.timedelta(minutes = 10)
+    assert util.get_timedelta(None, 'yesterday') == datetime.timedelta(days = 1)
+    assert util.get_timedelta(None, 'today') == datetime.timedelta(days = 0)
 
 def test_convert_approx_time_to_dt():
     noon = truncate_datetime_to_hour_precision(datetime.datetime.now().replace(hour = 12))

@@ -47,6 +47,21 @@ def test_absolute_datetime_regex_with_PM_AM():
     matches = base.DATETIME_PATTERN.search('ate a 12300 cal candy bar at 3:00P').groupdict()
     assert matches['EXACT_TIME'] == '3:00P'
 
+def test_exact_datetime_regex_with_modifier():
+    matches = base.DATETIME_PATTERN.search('ate a 300 cal donut yesterday at 2:00PM').groupdict()
+    assert matches['EXACT_TIME'] == '2:00PM'
+    assert matches['MODIFIER'] == 'yesterday'
+
+    matches = base.DATETIME_PATTERN.search('ate a 300 cal donut today at 2:00PM').groupdict()
+    assert matches['EXACT_TIME'] == '2:00PM'
+
+    matches = base.DATETIME_PATTERN.search('ate a 300 cal donut today at 2').groupdict()
+    assert matches['EXACT_TIME'] == '2'
+
+def test_approx_datetime_regex_with_yesterday():
+    matches = base.DATETIME_PATTERN.search('ate a 300 cal donut yesterday morning').groupdict()
+    assert matches['APPROX_TIME'] == 'morning'
+    assert matches['MODIFIER'] == 'yesterday'
 
 def test_infer_datetime():
     log_request = {
