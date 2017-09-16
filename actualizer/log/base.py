@@ -14,7 +14,6 @@ EXACT_TIMES = r'(?P<EXACT_TIME>(?P<hour>\d{1,2})(?P<minute>\:\d{2})?(?P<mode>(?:
 TOKENS_PRECEEDING_TIMES = r'(?:(?:at)|(?:this))'
 ABSOLUTE_DATETIME_PATTERN = r'(?P<ABSOLUTE>' + TOKENS_PRECEEDING_TIMES + r'\s{1,}' + r'(?:' + '|'.join([APPROXIMATE_TIMES, EXACT_TIMES]) + r'))'
 DATETIME_PATTERN = re.compile('|'.join([RELATIVE_DELTA_PATTERN, ABSOLUTE_DATETIME_PATTERN]), re.IGNORECASE)
-print(DATETIME_PATTERN.pattern)
 NOW_DT = datetime.datetime.now()
 
 # TODO
