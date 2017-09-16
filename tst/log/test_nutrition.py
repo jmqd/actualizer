@@ -35,6 +35,7 @@ def test_nutrition_serialization():
     assert serialized_dict['food'] == serialize_food('apple')
     assert serialized_dict['calories'] == serialize_calories('100')
     assert serialized_dict['username'] == serialize_username(log_request['username'])
+    assert serialized_dict['logtype'] == serialize_logtype('NutritionLog')
 
 def test_food_regex():
     assert NutritionLog.PARSING_PATTERN

@@ -19,3 +19,7 @@ def serialize_calories(calories: Union[int, float, str]) -> int:
 
 def serialize_food(food: str) -> str:
     return str(food)
+
+def serialize_logtype(logtype: str) -> str:
+    return logtype
+

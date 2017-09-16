@@ -24,7 +24,7 @@ NOW_DT = datetime.datetime.now()
 
 class Log:
 
-    FIELDS = ['username', 'message', 'request_time', 'datetime']
+    FIELDS = ['username', 'message', 'request_time', 'datetime', 'logtype']
     FIELD_SERIALIZER = {k:eval('serialize_{}'.format(k)) for k in FIELDS}
 
     def __init__(self, log_request_context: dict) -> 'Log':
@@ -51,6 +51,10 @@ class Log:
             hour = int(groupdict.get('hour'))
             minute = int(groupdict.get('minute', 0))
             return util.get_datetime_from_timestr(hour, minute)
+
+    @property
+    def logtype(self):
+        return self.__class__.__name__
 
     def to_serialized_dict(self) -> dict:
         return {k: self.FIELD_SERIALIZER[k](getattr(self, k)) for k in self.FIELDS}
