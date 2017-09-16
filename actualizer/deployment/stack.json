@@ -12,7 +12,7 @@
 					{"AttributeName": "datetime", "KeyType": "RANGE"}
 				],
 				"ProvisionedThroughput": {"ReadCapacityUnits": 1, "WriteCapacityUnits": 1},
-				"TableName": "actualizer-logs"
+				"TableName": "actualizer-us-west-2-prod-logs"
             }
         }
     }
