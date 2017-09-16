@@ -46,9 +46,15 @@ def convert_numeric(num_str: str) -> Union[int, float]:
 def convert_to_int(num: Union[str, int, float]) -> int:
     return int(convert_numeric(num))
 
-def convert_fuzzy_time_to_dt(fuzzy_datetime: str) -> datetime.datetime:
+def convert_approx_time_to_dt(fuzzy_datetime: str) -> datetime.datetime:
     now = datetime.datetime.now()
 
-    if fuzzy_datetime in FUZZY_DATETIME_MAPPING:
-        return FUZZY_DATETIME_MAPPING.get(fuzzy_datetime)(now)
+    if fuzzy_datetime.lower() in FUZZY_DATETIME_MAPPING:
+        return FUZZY_DATETIME_MAPPING.get(fuzzy_datetime.lower())(now)
+
+def get_datetime_from_timestr(hour: int, minute: int) -> datetime.datetime:
+    now = datetime.datetime.now()
+    now = now.replace(minute = 0, second = 0, microsecond = 0, hour = 0)
+
+    return now.replace(hour = hour, minute = minute)
 
