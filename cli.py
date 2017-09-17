@@ -62,8 +62,6 @@ def weekly_report():
         print(day, calories)
         day = day - datetime.timedelta(days = 1)
 
-
-
 if __name__ == '__main__':
     cli()
 
