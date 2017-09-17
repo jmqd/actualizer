@@ -6,7 +6,7 @@ from actualizer import log
 from actualizer import util
 from boto3.dynamodb.conditions import Key, Attr
 
-LOG_TABLE_NAME_TEMPLATE = 'actualizer-logs'
+LOG_TABLE_NAME_TEMPLATE = 'actualizer-{region}-{domain}-logs'
 LOG_SUBCLASSES = [x for x in util.get_all_subclasses(log.base.Log)]
 FIELD_SERIALIZERS = {k:v for x in LOG_SUBCLASSES for k, v in x.FIELD_SERIALIZER.items()}
 
