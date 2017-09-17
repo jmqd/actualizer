@@ -38,9 +38,6 @@ class LogTableDao:
                 )
         return put_response
 
-    def test(self, log):
-        return convert_dict_to_ddb_item(log.to_serialized_dict())
-
     def query_by_timerange(self, username: str, start: datetime.datetime,
                           end: datetime.datetime) -> List[dict]:
         response = self.table.query(
@@ -48,6 +45,19 @@ class LogTableDao:
                 Key('datetime').between(start, end)
                 )
         return response
+
+class NutritionLogDaoHelper:
+    def __init__(self, dao: LogTableDao, context: dict):
+        self.dao = dao
+        self.context = context
+
+    def get_calories_for_day(self, day: datetime.datetime) -> int:
+        start = day.isoformat()
+        end = (day + datetime.timedelta(days = 1)).isoformat()
+        response = self.dao.query_by_timerange(self.context['username'], start, end)
+        items = response['Items']
+        calories = sum([x.get('calories', 0) for x in items])
+        return calories
 
 def convert_dict_to_ddb_item(data: dict) -> dict:
     return {k:{DDB_ATTRIBUTE_TYPE_MAPPING[RETURN_SIGNATURES_FOR_FIELDS[k]]: v} for k, v in data.items()}

@@ -5,6 +5,10 @@ from actualizer.api.request import LogRequestContext
 from actualizer.api.request import ListLogsRequestContext
 from actualizer.api import activity
 
+# just testing
+from actualizer.dao import LogTableDao
+from actualizer.dao import NutritionLogDaoHelper
+
 NOW_DT = datetime.datetime.now()
 NOW = NOW_DT.isoformat()
 NOW_MINUS_24HR = (NOW_DT - datetime.timedelta(hours=24)).isoformat()
@@ -35,6 +39,30 @@ def list(**list_request: dict) -> None:
     list_request_context = ListLogsRequestContext(list_request, DEFAULT_REGION, DEFAULT_DOMAIN)
     response = activity.list(list_request_context)
     print(response)
+
+@cli.command('test')
+def test():
+    context = {'username': DEFAULT_USERNAME}
+    today = datetime.datetime.today() - datetime.timedelta(days = 1)
+    dao = LogTableDao(DEFAULT_REGION, DEFAULT_DOMAIN)
+    dao_helper = NutritionLogDaoHelper(dao, context)
+    calories = dao_helper.get_calories_for_day(today)
+    print(calories)
+
+@cli.command('weekly-report')
+def weekly_report():
+    context = {'username': DEFAULT_USERNAME}
+    today = datetime.datetime.today()
+    day = today
+    dao = LogTableDao(DEFAULT_REGION, DEFAULT_DOMAIN)
+    dao_helper = NutritionLogDaoHelper(dao, context)
+
+    while day > today - datetime.timedelta(days = 7):
+        calories = dao_helper.get_calories_for_day(day)
+        print(day, calories)
+        day = day - datetime.timedelta(days = 1)
+
+
 
 if __name__ == '__main__':
     cli()
