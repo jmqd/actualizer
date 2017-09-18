@@ -52,10 +52,12 @@ class Log:
         if 'EXACT_TIME' in groupdict:
             hour = int(groupdict.get('hour'))
             minute = int(groupdict.get('minute', 0))
-            datetime = util.get_datetime_from_timestr(hour, minute)
+            mode = groupdict.get('mode')
+            datetime = util.get_datetime_from_timestr(hour, minute, mode)
 
-        if 'MODIFIER' in groupdict:
-            datetime - util.get_timedelta(interval = groupdict['MODIFIER'])
+        if 'MODIFIER' in groupdict or 'APPROX_MODIFIER' in groupdict:
+            modifier = groupdict.get('MODIFIER') or groupdict.get('APPROX_MODIFIER')
+            datetime = datetime - util.get_timedelta(None, modifier)
 
         return datetime
 
