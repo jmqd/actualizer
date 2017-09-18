@@ -54,7 +54,7 @@ def test():
 @cli.command('weekly-report')
 def weekly_report():
     context = {'username': DEFAULT_USERNAME}
-    today = datetime.datetime.today()
+    today = datetime.datetime.today().replace(minute = 0, second = 0, microsecond = 0, hour = 0)
     day = today
     dao = LogTableDao(DEFAULT_REGION, DEFAULT_DOMAIN)
     dao_helper = NutritionLogDaoHelper(dao, context)
