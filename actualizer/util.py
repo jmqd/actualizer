@@ -65,15 +65,15 @@ def convert_approx_time_to_dt(fuzzy_datetime: str) -> datetime.datetime:
     if fuzzy_datetime.lower() in FUZZY_DATETIME_MAPPING:
         return FUZZY_DATETIME_MAPPING.get(fuzzy_datetime.lower())(now)
 
-def get_datetime_from_timestr(hour: int, minute: int, mode: str) -> datetime.datetime:
+def get_datetime_from_timestr(hour: int, minute: int, mode: str=None) -> datetime.datetime:
     now = datetime.datetime.now()
     now = now.replace(minute = 0, second = 0, microsecond = 0, hour = 0)
 
     if not mode:
         pass
-    elif mode.lower() == 'am' and hour == 12:
+    elif mode.lower() in ('am', 'a') and hour == 12:
         hour = 0
-    elif mode.lower() == 'pm' and hour < 12:
+    elif mode.lower() in ('pm', 'p') and hour < 12:
         hour = hour + 12
 
     return now.replace(hour = hour, minute = minute)
