@@ -59,12 +59,24 @@ def test_exact_datetime_regex_with_modifier():
     matches = base.DATETIME_PATTERN.search('ate a 300 cal donut today at 2').groupdict()
     assert matches['EXACT_TIME'] == '2'
 
+    matches = base.DATETIME_PATTERN.search('ate a 500 cal donut yesterday at 5:30PM').groupdict()
+    assert matches['EXACT_TIME'] == '5:30PM'
+    assert matches['MODIFIER'] == 'yesterday'
+
 def test_approx_datetime_regex_with_yesterday():
     matches = base.DATETIME_PATTERN.search('ate a 300 cal donut yesterday morning').groupdict()
     assert matches['APPROX_TIME'] == 'morning'
     assert matches['APPROX_MODIFIER'] == 'yesterday'
 
-def test_infer_datetime():
+    matches = base.DATETIME_PATTERN.search('ate a 300 cal donut this morning').groupdict()
+    assert matches['APPROX_TIME'] == 'morning'
+    assert matches['APPROX_MODIFIER'] == 'this'
+
+    matches = base.DATETIME_PATTERN.search('ate a 300 cal donut yesterday evening').groupdict()
+    assert matches['APPROX_TIME'] == 'evening'
+    assert matches['APPROX_MODIFIER'] == 'yesterday'
+
+def test_infer_datetime_relative():
     log_request = {
             'request_time': base.NOW_DT,
             'username': 'jordan',
@@ -81,4 +93,30 @@ def test_infer_datetime():
             }
     log = base.Log(log_request)
     assert log.datetime == dt - datetime.timedelta(hours = 4)
+
+def test_infer_datetime_approx_with_modifier():
+    dt = datetime.datetime.now()
+    log_request = {
+            'request_time': dt,
+            'username': 'jordan',
+            'message': 'drank 300 cal latte yesterday morning'
+            }
+    log = base.Log(log_request)
+    assert log.datetime == (dt - datetime.timedelta(days = 1)).replace(hour = 9, minute = 0, second = 0, microsecond = 0)
+
+    log_request = {
+            'request_time': dt,
+            'username': 'jordan',
+            'message': 'ate 600 cal pizza yesterday evening'
+            }
+    log = base.Log(log_request)
+    assert log.datetime == (dt - datetime.timedelta(days = 1)).replace(hour = 18, minute = 0, second = 0, microsecond = 0)
+
+    log_request = {
+            'request_time': dt,
+            'username': 'jordan',
+            'message': 'ate 600 cal pizza this morning'
+            }
+    log = base.Log(log_request)
+    assert log.datetime == dt.replace(hour = 9, minute = 0, second = 0, microsecond = 0)
 
