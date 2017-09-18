@@ -120,3 +120,37 @@ def test_infer_datetime_approx_with_modifier():
     log = base.Log(log_request)
     assert log.datetime == dt.replace(hour = 9, minute = 0, second = 0, microsecond = 0)
 
+def test_infer_datetime_exact_time_with_modifier():
+    dt = datetime.datetime.now()
+    log_request = {
+            'request_time': dt,
+            'username': 'jordan',
+            'message': 'drank 300 cal latte yesterday at 10:00AM'
+            }
+    log = base.Log(log_request)
+    assert log.datetime == (dt - datetime.timedelta(days = 1)).replace(hour = 10, minute = 0, second = 0, microsecond = 0)
+
+    log_request = {
+            'request_time': dt,
+            'username': 'jordan',
+            'message': 'drank 300 cal latte yesterday at 5:30PM'
+            }
+    log = base.Log(log_request)
+    assert log.datetime == (dt - datetime.timedelta(days = 1)).replace(hour = 17, minute = 30, second = 0, microsecond = 0)
+
+    log_request = {
+            'request_time': dt,
+            'username': 'jordan',
+            'message': 'drank 300 cal latte yesterday at 10'
+            }
+    log = base.Log(log_request)
+    assert log.datetime == (dt - datetime.timedelta(days = 1)).replace(hour = 10, minute = 0, second = 0, microsecond = 0)
+
+    log_request = {
+            'request_time': dt,
+            'username': 'jordan',
+            'message': 'drank 300 cal latte today at 10:00AM'
+            }
+    log = base.Log(log_request)
+    assert log.datetime == dt.replace(hour = 10, minute = 0, second = 0, microsecond = 0)
+
