@@ -54,6 +54,40 @@ def test_nutrition_serialization_with_of_clause():
     assert serialized_dict['username'] == 'jordan'
     assert serialized_dict['logtype'] == 'NutritionLog'
 
+def test_nutrition_serialization_with_yesterday_datetime():
+    log_request = {
+            'username': 'jordan',
+            'message': 'ate 900 cals of thai food yesterday at 7:00PM',
+            'request_time': NOW_DT
+            }
+    log = NutritionLog(log_request)
+    serialized_dict = log.to_serialized_dict()
+
+    assert serialized_dict['datetime'] == serialize_datetime(NOW_DT.replace(minute = 0, second = 0, microsecond = 0, hour = 19) - datetime.timedelta(days = 1))
+    assert serialized_dict['message'] == 'ate 900 cals of thai food yesterday at 7:00PM'
+    assert serialized_dict['request_time'] == serialize_request_time(log_request['request_time'])
+    assert serialized_dict['food'] == 'thai food'
+    assert serialized_dict['calories'] == '900'
+    assert serialized_dict['username'] == 'jordan'
+    assert serialized_dict['logtype'] == 'NutritionLog'
+
+def test_nutrition_serialization_with_yesterday_approxtime():
+    log_request = {
+            'username': 'jordan',
+            'message': 'ate 900 cals of thai food yesterday evening',
+            'request_time': NOW_DT,
+            }
+    log = NutritionLog(log_request)
+    serialized_dict = log.to_serialized_dict()
+
+    assert serialized_dict['datetime'] == serialize_datetime(NOW_DT.replace(hour = 18, minute = 0, second = 0, microsecond = 0) - datetime.timedelta(days = 1))
+    assert serialized_dict['message'] == 'ate 900 cals of thai food yesterday evening'
+    assert serialized_dict['request_time'] == serialize_request_time(log_request['request_time'])
+    assert serialized_dict['food'] == 'thai food'
+    assert serialized_dict['calories'] == '900'
+    assert serialized_dict['username'] == 'jordan'
+    assert serialized_dict['logtype'] == 'NutritionLog'
+
 def test_food_regex():
     assert NutritionLog.PARSING_PATTERN
 
