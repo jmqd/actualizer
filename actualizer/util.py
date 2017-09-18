@@ -1,4 +1,6 @@
-from typing import List, Union
+from typing import List
+from typing import Union
+from typing import Optional
 import datetime
 
 TIMEUNIT_MAP = {
@@ -15,7 +17,14 @@ TIMEUNIT_MAP = {
         'mins': 'minutes',
         's': 'seconds',
         'sec': 'seconds',
-        'secs': 'seconds'
+        'secs': 'seconds',
+        'yesterday': 'days',
+        'today': 'days'
+        }
+
+DEFAULT_QTY_FOR_INTERVAL = {
+        'today': 0,
+        'yesterday': 1
         }
 
 FUZZY_DATETIME_MAPPING = {
@@ -34,8 +43,10 @@ def get_all_subclasses(cls: type) -> List[type]:
 
     return all_subclasses
 
-def get_timedelta(qty: Union[int, float], interval: str) -> datetime.timedelta:
-    return datetime.timedelta(**{TIMEUNIT_MAP[interval]: convert_numeric(qty)})
+def get_timedelta(qty: Optional[Union[int, float]], interval: str) -> datetime.timedelta:
+    interval_kwarg = TIMEUNIT_MAP[interval]
+    interval_qty = convert_numeric(qty) if qty is not None else DEFAULT_QTY_FOR_INTERVAL[interval]
+    return datetime.timedelta(**{interval_kwarg: interval_qty})
 
 def convert_numeric(num_str: str) -> Union[int, float]:
     try:
