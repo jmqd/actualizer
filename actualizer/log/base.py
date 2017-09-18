@@ -39,7 +39,7 @@ class Log:
         matches = DATETIME_PATTERN.search(self.message)
 
         if not matches:
-            return None
+            raise ValueError("Unable to parse a datetime from the log message.")
 
         groupdict = {k:v for k, v in matches.groupdict().items() if v is not None}
 
@@ -60,7 +60,6 @@ class Log:
             datetime = datetime - util.get_timedelta(None, modifier)
 
         return datetime
-
 
     @property
     def logtype(self):
