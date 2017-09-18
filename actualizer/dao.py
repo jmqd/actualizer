@@ -1,5 +1,6 @@
 import boto3
 import datetime
+from collections import OrderedDict
 from typing import List
 from inspect import signature
 from actualizer import log
@@ -63,6 +64,14 @@ class NutritionLogDaoHelper:
         items = response['Items']
         calories = sum([x.get('calories', 0) for x in items])
         return calories
+
+    def get_info_for_day(self, day: datetime.datetime) -> dict:
+        start = day.isoformat()
+        end = (day + datetime.timedelta(days = 1)).isoformat()
+        response = self.dao.query_by_timerange(self.context['username'], start, end)
+        items = response['Items']
+        return OrderedDict([(x['datetime'], {'food': x['food'], 'calories': x['calories']}) for x in items])
+
 
 class PotentialTableDao(DdbTableDao):
     TABLE_NAME_TEMPLATE = POTENTIAL_TABLE_NAME_TEMPLATE

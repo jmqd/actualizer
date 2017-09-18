@@ -2,6 +2,7 @@
 
 import click
 import datetime
+from dateutil import parser
 from actualizer.log import client
 from actualizer.api.request import LogRequestContext
 from actualizer.api.request import ListLogsRequestContext
@@ -63,6 +64,15 @@ def weekly_report():
         calories = dao_helper.get_calories_for_day(day)
         print(day, calories)
         day = day - datetime.timedelta(days = 1)
+
+@cli.command('get-nutrition-info')
+@click.option('--day')
+def get_nutrition_info(day: str):
+    context = {'username': DEFAULT_USERNAME}
+    day = parser.parse(day).replace(hour = 0, minute = 0, second = 0, microsecond = 0)
+    dao = LogTableDao(DEFAULT_REGION, DEFAULT_DOMAIN)
+    dao_helper = NutritionLogDaoHelper(dao, context)
+    print(dao_helper.get_info_for_day(day))
 
 if __name__ == '__main__':
     cli()
