@@ -72,7 +72,7 @@ def get_nutrition_info(day: str):
     day = parser.parse(day).replace(hour = 0, minute = 0, second = 0, microsecond = 0)
     dao = LogTableDao(DEFAULT_REGION, DEFAULT_DOMAIN)
     dao_helper = NutritionLogDaoHelper(dao, context)
-    print(dao_helper.get_info_for_day(day))
+    print(dao_helper.list_entries_for_day(day))
 
 if __name__ == '__main__':
     cli()

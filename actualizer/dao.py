@@ -65,7 +65,7 @@ class NutritionLogDaoHelper:
         calories = sum([x.get('calories', 0) for x in items])
         return calories
 
-    def get_info_for_day(self, day: datetime.datetime) -> dict:
+    def list_entries_for_day(self, day: datetime.datetime) -> dict:
         start = day.isoformat()
         end = (day + datetime.timedelta(days = 1)).isoformat()
         response = self.dao.query_by_timerange(self.context['username'], start, end)
