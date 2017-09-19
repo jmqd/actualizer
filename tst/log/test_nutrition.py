@@ -54,6 +54,39 @@ def test_nutrition_serialization_with_of_clause():
     assert serialized_dict['username'] == 'jordan'
     assert serialized_dict['logtype'] == 'NutritionLog'
 
+def test_nutrition_serialization_with_today_approx_time():
+    log_request = {
+            'username': 'special@username',
+            'message': 'ate 400 cals of korean appetizers today at noon',
+            'request_time': NOW_DT
+            }
+    log = NutritionLog(log_request)
+    serialized_dict = log.to_serialized_dict()
+
+    assert serialized_dict['datetime'] == serialize_datetime(NOW_DT.replace(hour = 12, minute = 0, second = 0, microsecond = 0))
+    assert serialized_dict['message'] == 'ate 400 cals of korean appetizers today at noon'
+    assert serialized_dict['request_time'] == serialize_request_time(log_request['request_time'])
+    assert serialized_dict['food'] == 'korean appetizers'
+    assert serialized_dict['calories'] == '400'
+    assert serialized_dict['username'] == 'special@username'
+
+def test_nutrition_serialization_with_today_datetime():
+
+    log_request = {
+            'username': 'special@username',
+            'message': 'ate 600 cals of Korean Beef Tofu Soup today at 12:15',
+            'request_time': NOW_DT
+            }
+    log = NutritionLog(log_request)
+    serialized_dict = log.to_serialized_dict()
+
+    assert serialized_dict['datetime'] == serialize_datetime(NOW_DT.replace(hour = 12, minute = 15, second = 0, microsecond = 0))
+    assert serialized_dict['message'] == 'ate 600 cals of Korean Beef Tofu Soup today at 12:15'
+    assert serialized_dict['request_time'] == serialize_request_time(log_request['request_time'])
+    assert serialized_dict['food'] == 'Korean Beef Tofu Soup'
+    assert serialized_dict['calories'] == '600'
+    assert serialized_dict['username'] == 'special@username'
+
 def test_nutrition_serialization_with_yesterday_datetime():
     log_request = {
             'username': 'jordan',
@@ -114,4 +147,9 @@ def test_food_regex():
     matches = NutritionLog.PARSING_PATTERN.search('drank 300 calorie latte').groupdict()
     assert matches['food'] == 'latte'
     assert matches['calories'] == '300'
+
+    matches = NutritionLog.PARSING_PATTERN.search('ate 400 cals of korean appetizers').groupdict()
+    assert matches['food'] == 'korean appetizers'
+    assert matches['calories'] == '400'
+
 
