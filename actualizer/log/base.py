@@ -10,7 +10,7 @@ TOKENS_SUCCEEDING_TIMEUNIT = r'(?P<RELATIVE_DIRECTION>(?:ago)|(?:earlier))'
 APPROXIMATE_TIMES = r'(?P<APPROX_TIME>(?:(?:noon)|(?:midnight)|(?:morning)|(?:afternoon)|(?:evening)))'
 EXACT_TIMES = r'(?P<EXACT_TIME>(?P<hour>\d{1,2})(?:\:(?P<minute>\d{2}))?(?P<mode>(?:\s)?(?:(?:PM?)|(?:AM?)))?)'
 TOKENS_PRECEEDING_TIMES = r'(?:(?P<MODIFIER>(?:yesterday)|(?:today))\s{1,})?(?:(?:at)|(?:this))'
-TOKENS_PRECEEDING_APPROX_TIMES = r'(?P<APPROX_MODIFIER>(?:yesterday)|(?:today)|(?:this))'
+TOKENS_PRECEEDING_APPROX_TIMES = r'(?P<APPROX_MODIFIER>(?:yesterday)|(?:today)|(?:this))(?:\s{1,}at)?'
 
 APPROX_TIMES = r'\s{1,}'.join([TOKENS_PRECEEDING_APPROX_TIMES, APPROXIMATE_TIMES])
 RELATIVE_DELTA_PATTERN = r'(?P<RELATIVE_DELTA>' + r'\s{1,}'.join([TOKENS_PRECEEDING_TIMEUNIT, TIMEUNIT_PATTERN, TOKENS_SUCCEEDING_TIMEUNIT])  + r')'
