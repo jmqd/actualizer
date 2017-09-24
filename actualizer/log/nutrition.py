@@ -2,6 +2,7 @@ import re
 from typing import Union
 
 from actualizer import util
+from actualizer.log import base
 from actualizer.log.serializers import *
 from actualizer.log.base import Log
 from actualizer.log.base import DATETIME_PATTERN

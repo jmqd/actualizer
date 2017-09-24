@@ -6,6 +6,7 @@ from dateutil import parser
 from actualizer.log import client
 from actualizer.api.request import LogRequestContext
 from actualizer.api.request import ListLogsRequestContext
+from actualizer.api.request import ListGoalsRequestContext
 from actualizer.api import activity
 
 # just testing
@@ -20,6 +21,7 @@ LOG_TABLE_NAME = 'actualizer-logs'
 DEFAULT_USERNAME = 'jordan'
 DEFAULT_REGION = 'us-west-2'
 DEFAULT_DOMAIN = 'prod'
+DEFAULT_GOAL_TYPE = 'nutrition'
 
 @click.group('cli')
 def cli() -> None: pass
@@ -33,18 +35,18 @@ def log(**log_request: dict) -> None:
     response = activity.log(log_request_context)
     print(response)
 
-@cli.command('list')
+@cli.command('list-logs')
 @click.option('--username', type = str, default = DEFAULT_USERNAME)
 @click.option('--start', default = NOW_MINUS_7_DAYS)
 @click.option('--end', default = NOW_DT)
-def list(**list_request: dict) -> None:
+def list_logs(**list_request: dict) -> None:
     list_request['request_time'] = NOW_DT
     list_request_context = ListLogsRequestContext(list_request, DEFAULT_REGION, DEFAULT_DOMAIN)
     response = activity.list(list_request_context)
     print(response)
 
 @cli.command('test')
-def test():
+def test() -> None:
     context = {'username': DEFAULT_USERNAME}
     today = datetime.datetime.today() - datetime.timedelta(days = 1)
     dao = LogTableDao(DEFAULT_REGION, DEFAULT_DOMAIN)
@@ -53,7 +55,7 @@ def test():
     print(calories)
 
 @cli.command('weekly-report')
-def weekly_report():
+def weekly_report() -> None:
     context = {'username': DEFAULT_USERNAME}
     today = datetime.datetime.today().replace(minute = 0, second = 0, microsecond = 0, hour = 0)
     day = today
@@ -67,12 +69,19 @@ def weekly_report():
 
 @cli.command('get-nutrition-info')
 @click.option('--day')
-def get_nutrition_info(day: str):
+def get_nutrition_info(day: str) -> None:
     context = {'username': DEFAULT_USERNAME}
     day = parser.parse(day).replace(hour = 0, minute = 0, second = 0, microsecond = 0)
     dao = LogTableDao(DEFAULT_REGION, DEFAULT_DOMAIN)
     dao_helper = NutritionLogDaoHelper(dao, context)
     print(dao_helper.list_entries_for_day(day))
+
+@cli.command('list-goals')
+@click.option('--username', default = DEFAULT_USERNAME)
+@click.option('--goal-type', default = DEFAULT_GOAL_TYPE)
+def list_goals(username: str, goal_type: str) -> None:
+    context = {'username': username, 'request_time': NOW_DT, 'goal_type': goal_type}
+    request_context = ListGoalsRequestContext(context, DEFAULT_REGION, DEFAULT_DOMAIN)
 
 if __name__ == '__main__':
     cli()

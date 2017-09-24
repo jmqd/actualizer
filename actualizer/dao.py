@@ -5,12 +5,13 @@ from typing import List
 from inspect import signature
 from actualizer import log
 from actualizer import util
+from actualizer.log import base
 from boto3.dynamodb.conditions import Key, Attr
 
 LOG_TABLE_NAME_TEMPLATE = 'actualizer-{region}-{domain}-logs'
-POTENTIAL_TABLE_NAME_TEMPLATE = 'actualizer-{region}-{domain}-potentials'
+GOAL_TABLE_NAME_TEMPLATE = 'actualizer-{region}-{domain}-goals'
 
-LOG_SUBCLASSES = [x for x in util.get_all_subclasses(log.base.Log)]
+LOG_SUBCLASSES = [x for x in util.get_all_subclasses(base.Log)]
 FIELD_SERIALIZERS = {k:v for x in LOG_SUBCLASSES for k, v in x.FIELD_SERIALIZER.items()}
 
 # mapping from field name to serializer function return type
@@ -73,8 +74,10 @@ class NutritionLogDaoHelper:
         return OrderedDict([(x['datetime'], {'food': x['food'], 'calories': x['calories']}) for x in items])
 
 
-class PotentialTableDao(DdbTableDao):
-    TABLE_NAME_TEMPLATE = POTENTIAL_TABLE_NAME_TEMPLATE
+class GoalTableDao(DdbTableDao):
+    TABLE_NAME_TEMPLATE = GOAL_TABLE_NAME_TEMPLATE
+
+class GoalTableDaoHelper: pass
 
 def convert_dict_to_ddb_item(data: dict) -> dict:
     return {k:{DDB_ATTRIBUTE_TYPE_MAPPING[RETURN_SIGNATURES_FOR_FIELDS[k]]: v} for k, v in data.items()}

@@ -1,5 +1,11 @@
 from actualizer.dao import LogTableDao
+from actualizer.dao import GoalTableDao
 from actualizer.log import client
+
+DAOS = {
+        'log': LogTableDao,
+        'goal': GoalTableDao
+        }
 
 class RequestContext:
     def __init__(self, payload: dict, region: str, domain: str) -> 'RequestContext':
@@ -7,23 +13,27 @@ class RequestContext:
         self.domain = domain
         self.username = payload['username']
         self.request_time = payload['request_time']
+        self.dao = {k:DAOS[k](self.region, self.domain) for k in self.__class__.REQUIRED_DAOS}
 
     def __str__(self) -> str:
         return '{}[{}][{}]: {}'.format(self.__class__.__name__, self.region, self.domain, self.request)
 
 class LogDaoRequest(RequestContext):
-    def __init__(self, payload: dict, region: str, domain: str) -> 'RequestContext':
-        super().__init__(payload, region, domain)
-        self.dao = LogTableDao(self.region, self.domain)
+    REQUIRED_DAOS = {'log'}
+
+class GoalDaoRequest(RequestContext):
+    REQUIRED_DAOS = {'goal'}
 
 class LogRequestContext(LogDaoRequest):
-    def __init__(self, payload: dict, region: str, domain: str) -> RequestContext:
+    def __init__(self, payload: dict, region: str, domain: str) -> None:
         super().__init__(payload, region, domain)
-        self.payload = client.factory(payload)
+        self.log = client.factory(payload)
 
 class ListLogsRequestContext(LogDaoRequest):
-    def __init__(self, payload: dict, region: str, domain: str) -> RequestContext:
+    def __init__(self, payload: dict, region: str, domain: str) -> None:
         super().__init__(payload, region, domain)
         self.start = payload['start'].isoformat()
         self.end = payload['end'].isoformat()
+
+class ListGoalsRequestContext(GoalDaoRequest): pass
 
