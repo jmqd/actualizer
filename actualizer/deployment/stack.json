@@ -14,6 +14,21 @@
 				"ProvisionedThroughput": {"ReadCapacityUnits": 1, "WriteCapacityUnits": 1},
 				"TableName": "actualizer-us-west-2-prod-logs"
             }
+        },
+        "GoalTable": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+                "AttributeDefinitions": [
+					{"AttributeName": "username", "AttributeType": "S"},
+					{"AttributeName": "goal_type", "AttributeType": "S"}
+				],
+				"KeySchema": [
+					{"AttributeName": "username", "KeyType": "HASH"},
+					{"AttributeName": "goal_type", "KeyType": "RANGE"}
+				],
+				"ProvisionedThroughput": {"ReadCapacityUnits": 1, "WriteCapacityUnits": 1},
+				"TableName": "actualizer-us-west-2-prod-goals"
+            }
         }
     }
 }
