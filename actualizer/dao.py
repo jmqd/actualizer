@@ -77,6 +77,12 @@ class NutritionLogDaoHelper:
 class GoalTableDao(DdbTableDao):
     TABLE_NAME_TEMPLATE = GOAL_TABLE_NAME_TEMPLATE
 
+    def query_by_user(self, username):
+        response = self.table.query(
+                KeyConditionExpression = Key('username').eq(username)
+                )
+        return response
+
 class GoalTableDaoHelper: pass
 
 def convert_dict_to_ddb_item(data: dict) -> dict:

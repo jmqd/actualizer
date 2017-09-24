@@ -82,6 +82,15 @@ def get_nutrition_info(day: str) -> None:
 def list_goals(username: str, goal_type: str) -> None:
     context = {'username': username, 'request_time': NOW_DT, 'goal_type': goal_type}
     request_context = ListGoalsRequestContext(context, DEFAULT_REGION, DEFAULT_DOMAIN)
+    response = activity.list_goals(request_context)
+    print(response)
+
+@cli.command('create-goal')
+@click.option('--goal-type', default = "FieldMeetsConstraintGoal")
+@click.option('--name')
+@click.option('--body')
+def create_goal(goal_type: str, name: str, body: dict) -> None:
+    pass
 
 if __name__ == '__main__':
     cli()

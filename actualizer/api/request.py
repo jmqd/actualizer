@@ -2,6 +2,11 @@ from actualizer.dao import LogTableDao
 from actualizer.dao import GoalTableDao
 from actualizer.log import client
 
+'''TODO:
+    1. Create a class to abstract all the super().__init__ stuff away.
+        Something that abstracts the idea of "request-specific fields".
+'''
+
 DAOS = {
         'log': LogTableDao,
         'goal': GoalTableDao
@@ -35,5 +40,8 @@ class ListLogsRequestContext(LogDaoRequest):
         self.start = payload['start'].isoformat()
         self.end = payload['end'].isoformat()
 
-class ListGoalsRequestContext(GoalDaoRequest): pass
+class ListGoalsRequestContext(GoalDaoRequest):
+    def __init__(self, payload: dict, region: str, domain: str) -> None:
+        super().__init__(payload, region, domain)
+        self.goal_type = payload.get('goal_type')
 

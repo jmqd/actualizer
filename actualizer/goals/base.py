@@ -26,4 +26,3 @@ class FieldMeetsConstraintGoal(Goal):
         super().__init__(request_context)
         self.field = request_context['field']
         self.constraint = request_context['constraint']
-

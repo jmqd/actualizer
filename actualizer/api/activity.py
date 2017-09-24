@@ -11,5 +11,5 @@ def list_logs(request: ListLogsRequestContext) -> ListResponse:
     return request.dao['log'].query_by_timerange(request.username, request.start, request.end)
 
 def list_goals(request: ListGoalsRequestContext) -> ListResponse:
-    return request.dao['goal'].query_by_user(request.username, request.goal_type)
+    return request.dao['goal'].query_by_user(request.username)
 
