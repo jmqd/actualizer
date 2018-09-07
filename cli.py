@@ -8,6 +8,7 @@ from actualizer.api.request import LogRequestContext
 from actualizer.api.request import ListLogsRequestContext
 from actualizer.api.request import ListGoalsRequestContext
 from actualizer.api import activity
+from pprint import pprint
 
 # just testing
 from actualizer.dao import LogTableDao
@@ -22,6 +23,16 @@ DEFAULT_USERNAME = 'jordan'
 DEFAULT_REGION = 'us-west-2'
 DEFAULT_DOMAIN = 'prod'
 DEFAULT_GOAL_TYPE = 'nutrition'
+
+WEEKDAY_NAME_INDEX = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday"
+]
 
 @click.group('cli')
 def cli() -> None: pass
@@ -64,7 +75,7 @@ def weekly_report() -> None:
 
     while day > today - datetime.timedelta(days = 7):
         calories = dao_helper.get_calories_for_day(day)
-        print(day, calories)
+        print(WEEKDAY_NAME_INDEX[day.weekday()], calories)
         day = day - datetime.timedelta(days = 1)
 
 @cli.command('get-nutrition-info')
@@ -74,7 +85,7 @@ def get_nutrition_info(day: str) -> None:
     day = parser.parse(day).replace(hour = 0, minute = 0, second = 0, microsecond = 0)
     dao = LogTableDao(DEFAULT_REGION, DEFAULT_DOMAIN)
     dao_helper = NutritionLogDaoHelper(dao, context)
-    print(dao_helper.list_entries_for_day(day))
+    pprint(dao_helper.list_entries_for_day(day))
 
 @cli.command('list-goals')
 @click.option('--username', default = DEFAULT_USERNAME)
@@ -94,4 +105,3 @@ def create_goal(goal_type: str, name: str, body: dict) -> None:
 
 if __name__ == '__main__':
     cli()
-
