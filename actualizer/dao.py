@@ -45,8 +45,11 @@ class DdbTableDao:
 class LogTableDao(DdbTableDao):
     TABLE_NAME_TEMPLATE = LOG_TABLE_NAME_TEMPLATE
 
-    def query_by_timerange(self, username: str, start: datetime.datetime,
-                          end: datetime.datetime) -> List[dict]:
+    def query_by_timerange(
+            self,
+            username: str,
+            start: datetime.datetime,
+            end: datetime.datetime) -> List[dict]:
         response = self.table.query(
                 KeyConditionExpression = Key('username').eq(username) & \
                 Key('datetime').between(start, end)
