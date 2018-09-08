@@ -85,7 +85,7 @@ def get_nutrition_info(day: str) -> None:
     day = parser.parse(day).replace(hour = 0, minute = 0, second = 0, microsecond = 0)
     dao = LogTableDao(DEFAULT_REGION, DEFAULT_DOMAIN)
     dao_helper = NutritionLogDaoHelper(dao, context)
-    pprint(dao_helper.list_entries_for_day(day))
+    pretty_print_dict(dao_helper.list_entries_for_day(day))
 
 @cli.command('list-goals')
 @click.option('--username', default = DEFAULT_USERNAME)
@@ -102,6 +102,9 @@ def list_goals(username: str, goal_type: str) -> None:
 @click.option('--body')
 def create_goal(goal_type: str, name: str, body: dict) -> None:
     pass
+
+def pretty_print_dict(d: dict) -> None:
+    print('\n'.join("{}\t{}".format(k, v) for k, v in d.items()))
 
 if __name__ == '__main__':
     cli()
